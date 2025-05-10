@@ -1,0 +1,23 @@
+# 文本文件处理
+*.js text=auto eol=lf
+*.json text=auto eol=lf
+*.html text=auto eol=lf
+*.css text=auto eol=lf
+*.md text=auto eol=lf
+*.yml text=auto eol=lf
+
+# 二进制文件声明
+*.icns binary
+*.ico binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.zip binary
+*.dmg binary
+
+# 换行符统一处理
+*.sh text eol=lf
+
+# 特殊文件类型
+package-lock.json -diff
+yarn.lock -diff

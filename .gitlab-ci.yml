@@ -1,0 +1,78 @@
+stages:
+  - validate
+  - build
+  - package
+
+validate-environment:
+  stage: validate
+  tags:
+    - shell
+  script:
+    - echo "当前用户- $(whoami)"
+    - echo "Home目录- ${HOME}"
+    - echo "环境变量:"
+    - printenv
+    - echo "验证profile加载..."
+    - source /etc/profile && echo "Profile加载成功" || echo "Profile加载失败"
+    - echo "验证基础环境..."
+    - node -v
+    - npm -v
+
+variables:
+  ELECTRON_BUILDER_CACHE: "${CI_PROJECT_DIR}/.cache/electron-builder"
+  SHELL: "/bin/bash"
+  BEFORE_SCRIPT: |
+    echo "初始化Node环境..."
+    export HOME=$(pwd)/.ci-home
+    mkdir -p $HOME
+    # 使用项目本地node_modules中的node
+    export PATH=$(pwd)/node_modules/.bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    echo "当前PATH: $PATH"
+    # 安装Node.js到项目目录
+    if [ ! -d "node_modules/.bin/node" ]; then
+      echo "安装Node到项目目录..."
+      mkdir -p node_modules/.bin
+      curl -sL https://npmmirror.com/mirrors/node/v16.20.2/node-v16.20.2-linux-x64.tar.gz | tar xz -C node_modules/.bin --strip-components=1
+      ln -s ../node_modules/.bin/bin/node node_modules/.bin/node
+      ln -s ../node_modules/.bin/bin/npm node_modules/.bin/npm
+      ln -s ../node_modules/.bin/bin/npx node_modules/.bin/npx
+    fi
+    mkdir -p ${CI_PROJECT_DIR}/.cache
+    chmod 777 ${CI_PROJECT_DIR}/.cache
+
+cache:
+  paths:
+    - node_modules/
+    - .cache/electron-builder
+
+build-job:
+  stage: build
+  tags:
+    - shell
+  before_script:
+    - echo "开始构建..."
+    - npm config set registry https://registry.npmmirror.com
+  script:
+    - npm install --force || exit 1
+    - npm run build || (echo "构建失败"; exit 1)
+
+package-win:
+  stage: package
+  needs: ["build-job"]
+  tags:
+    - shell
+  script:
+    - npm run package -- --win --x64
+  artifacts:
+    paths:
+      - dist/
+
+package-linux:
+  stage: package
+  tags:
+    - shell
+  script:
+    - npm run package -- --linux --x64
+  artifacts:
+    paths:
+      - dist/

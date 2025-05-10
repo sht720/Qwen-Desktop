@@ -1,0 +1,43 @@
+appId: cn.mltech.qwen.desktop
+productName: Qwen-Desktop
+directories:
+  output: dist
+
+mac:
+  target:
+    - target: dmg
+      arch: [x64, arm64]
+  icon: build/icons/icon.icns
+  extraFiles:
+    - from: build/icons/icon.icns
+      to: resources/mac/icon.icns
+  artifactName: ${productName}-${version}-${os}-${arch}.${ext}
+  category: public.app-category.utilities
+
+win:
+  target:
+    - target: nsis
+      arch: [x64, arm64]
+  icon: build/icons/icon.ico
+  artifactName: ${productName}-${version}-${os}-${arch}.${ext}
+  extraFiles:
+    - from: build/icons/icon.ico
+      to: resources/win/icon.ico
+linux:
+  target:
+    - target: deb
+      arch: [x64, arm64]
+  category: Network
+  icon: "build/icons/linux"
+  executableName: qwen-desktop
+  maintainer: "A Z <cdebook@outlook.com>"
+  desktop:
+    entry:
+      Name: Qwen-Desktop
+      Comment: Qwen 非官方客户端
+      StartupWMClass: qwen-desktop
+      Icon: qwen-desktop
+      Type: Application
+  extraResources:
+    - from: "build/icons/linux/256x256.png"
+      to: "usr/share/icons/hicolor/256x256/apps/qwen-desktop.png"

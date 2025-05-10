@@ -1,0 +1,32 @@
+{
+  "name": "Qwen-Desktop",
+  "version": "1.0.0",
+  "description": "千问(Qwen)桌面非官方客户端，基于 Electron 开发(目前官方没有提供桌面客户端)",
+  "author": "A Z <cdebook@outlook.com>",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --inspect",
+    "build": "electron-builder -mwl",
+    "package-mac": "electron-builder --mac",
+    "package-win": "electron-builder --win",
+    "package-linux": "electron-builder --linux",
+    "package": "electron-builder"
+  },
+  "homepage": "https://github.com/sht720/Qwen-Desktop",
+  "devDependencies": {
+    "@npmcli/fs": "^4.0.0",
+    "electron": "^30.0.0",
+    "electron-builder": "^26.0.12",
+    "glob": "^11.0.2",
+    "lru-cache": "^11.1.0",
+    "rimraf": "^6.0.1"
+  },
+  "dependencies": {
+    "is-online": "^11.0.0",
+    "@electron/remote": "^2.1.2"
+  },
+  "build": {
+    "extends": "./electron-builder.yml"
+  }
+}
